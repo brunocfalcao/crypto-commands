@@ -43,7 +43,7 @@ class GetCoinPrice extends Command
 
         dispatch(function () use ($ids) {
             CryptoCrawler::set('coins', $ids)
-                 ->onPipeline([GetCoinPricePipeline::class])
+                 ->onPipeline(GetCoinPricePipeline::class)
                  ->crawl();
         });
 
