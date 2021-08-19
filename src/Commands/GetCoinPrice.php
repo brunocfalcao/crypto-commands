@@ -5,6 +5,7 @@ namespace Nidavellir\CryptoCommands\Commands;
 use Illuminate\Console\Command;
 use Nidavellir\CryptoCrawler\CryptoCrawler;
 use Nidavellir\CryptoCrawler\Pipelines\GetCoinPricePipeline;
+use Nidavellir\CryptoCube\Models\Coin;
 
 class GetCoinPrice extends Command
 {
@@ -13,7 +14,7 @@ class GetCoinPrice extends Command
      *
      * @var string
      */
-    protected $signature = 'crypto:get-coin-price {ids : The coingecko coin ids separated by comma}';
+    protected $signature = 'crypto:get-coin-price {ids? : The coingecko coin ids separated by comma}';
 
     /**
      * The console command description.
@@ -39,7 +40,7 @@ class GetCoinPrice extends Command
      */
     public function handle()
     {
-        $ids = $this->argument('ids');
+        $ids = $this->argument('ids') ?? Coin::all('coin_id')->pluck('coin_id')->join(',');
 
         dispatch(function () use ($ids) {
             CryptoCrawler::set('coins', $ids)
