@@ -39,11 +39,6 @@ class CreateCoin extends Command
      */
     public function handle()
     {
-        $this->info("
-|\ |.   _  _| _||. _
-| \||\/(_|(_|(-||||
-            ");
-
         $id = $this->argument('id');
 
         dispatch(function () use ($id) {
