@@ -48,7 +48,7 @@ class CreateCoin extends Command
 
         dispatch(function () use ($id) {
             CryptoCrawler::set('coin', $id)
-                 ->onPipeline(CreateCoinPipeline::class)
+                 ->onPipeline([CreateCoinPipeline::class])
                  ->crawl();
         });
 
