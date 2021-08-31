@@ -12,7 +12,7 @@ class CreateCrawler extends Command
      *
      * @var string
      */
-    protected $signature = 'crypto:create-crawler {acronym : The crawler acronym} {--live=false : Crawler is live already}';
+    protected $signature = 'crypto:create-crawler {acronym : The crawler acronym} {--live=true : Crawler is live already}';
 
     /**
      * The console command description.
@@ -40,12 +40,13 @@ class CreateCrawler extends Command
     {
         if (Crawler::firstWhere('acronym', $this->argument('acronym'))) {
             $this->error('Crawler already exists!');
+
             return -1;
         }
 
         Crawler::create([
             'acronym' => $this->argument('acronym'),
-            'is_live' => $this->option('live') ? true : false
+            'is_live' => $this->option('live') ? true : false,
         ]);
 
         $this->info('Crawler created');

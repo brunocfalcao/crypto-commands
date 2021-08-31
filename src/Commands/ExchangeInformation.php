@@ -14,14 +14,14 @@ class ExchangeInformation extends Command
      *
      * @var string
      */
-    protected $signature = 'crypto:exchange-information {symbol? : The symbol to be fetched (e..g: ADAUSDT)}';
+    protected $signature = 'crypto:exchange-information {canonical? : The canonical to be fetched (e..g: ADAUSDT)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Loads a specific symbol into Nidavellir (or all of them)';
+    protected $description = 'Loads a specific canonical into Nidavellir (or all of them)';
 
     /**
      * Create a new command instance.
@@ -42,31 +42,22 @@ class ExchangeInformation extends Command
     {
         $crawler = app('crypto.crawler');
 
-        if ($this->argument('symbol')) {
-            $crawler::onPipeline(ExchangeInformationPipeline::class)
-                ->set('parameters', ['symbol' => strtoupper($this->argument('symbol'))])
+        $canonical = strtoupper($this->argument('canonical'));
+
+        if ($canonical) {
+            dispatch(function () use ($canonical, $crawler) {
+                $crawler::onPipeline(ExchangeInformationPipeline::class)
+                ->set('canonical', $canonical)
+                ->set('parameters', ['symbol' => $canonical])
                 ->crawl();
+            });
         } else {
-            $crawler::onPipeline(ExchangeInformationPipeline::class)
+            dispatch(function () use ($canonical, $crawler) {
+                $crawler::onPipeline(ExchangeInformationPipeline::class)
+                ->set('canonical', $canonical)
                 ->crawl();
+            });
         }
-
-        return;
-
-        $response = Http::withHeaders(
-            ['X-MBX-APIKEY' => env('CRYPTO_CRAWLER_API')]
-        )->get('https://api.binance.com/api/v3/exchangeInfo');
-
-        dd($response->json()['symbols'][0]);
-
-        return;
-
-        dd($crawler::onPipeline(GetCoins::class))
-                   ->crawl();
-
-        CryptoCrawler::set('coins', $ids)
-             ->onPipeline(GetCoinPricePipeline::class)
-             ->crawl();
 
         return 0;
     }
