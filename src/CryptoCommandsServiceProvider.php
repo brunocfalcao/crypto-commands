@@ -3,9 +3,8 @@
 namespace Nidavellir\CryptoCommands;
 
 use Illuminate\Support\ServiceProvider;
-use Nidavellir\CryptoCommands\Commands\CreateCoin;
-use Nidavellir\CryptoCommands\Commands\GetCoinPrice;
-use Nidavellir\CryptoCommands\Commands\GetGeckoCoins;
+use Nidavellir\CryptoCommands\Commands\CreateCrawler;
+use Nidavellir\CryptoCommands\Commands\ExchangeInformation;
 
 final class CryptoCommandsServiceProvider extends ServiceProvider
 {
@@ -22,9 +21,8 @@ final class CryptoCommandsServiceProvider extends ServiceProvider
     private function registerCommands()
     {
         $this->commands([
-            CreateCoin::class,
-            GetCoinPrice::class,
-            GetGeckoCoins::class,
+            ExchangeInformation::class,
+            CreateCrawler::class,
         ]);
     }
 }
