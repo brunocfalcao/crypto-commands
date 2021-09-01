@@ -3,9 +3,8 @@
 namespace Nidavellir\CryptoCommands\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
+use Nidavellir\Crawler\Binance\BinanceCrawler;
 use Nidavellir\Crawler\Binance\Pipelines\ExchangeInformation\ExchangeInformation as ExchangeInformationPipeline;
-use Nidavellir\CryptoCrawler\Pipelines\GetCoinPricePipeline;
 
 class ExchangeInformation extends Command
 {
@@ -40,24 +39,18 @@ class ExchangeInformation extends Command
      */
     public function handle()
     {
-        $crawler = app('crypto.crawler');
-
         $canonical = strtoupper($this->argument('canonical'));
 
-        if ($canonical) {
-            dispatch(function () use ($canonical, $crawler) {
-                $crawler::onPipeline(ExchangeInformationPipeline::class)
-                ->set('canonical', $canonical)
-                ->set('parameters', ['symbol' => $canonical])
-                ->crawl();
-            });
-        } else {
-            dispatch(function () use ($canonical, $crawler) {
-                $crawler::onPipeline(ExchangeInformationPipeline::class)
-                ->set('canonical', $canonical)
-                ->crawl();
-            });
-        }
+        dispatch(function () use ($canonical) {
+            $crawler = BinanceCrawler::onPipeline(ExchangeInformationPipeline::class);
+
+            if ($canonical) {
+                $crawler->set('canonical', $canonical)
+                        ->set('parameters', ['symbol' => $canonical]);
+            }
+
+            $crawler->crawl();
+        });
 
         return 0;
     }

@@ -5,6 +5,7 @@ namespace Nidavellir\CryptoCommands;
 use Illuminate\Support\ServiceProvider;
 use Nidavellir\CryptoCommands\Commands\CreateCrawler;
 use Nidavellir\CryptoCommands\Commands\ExchangeInformation;
+use Nidavellir\CryptoCommands\Commands\Klines;
 
 final class CryptoCommandsServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,7 @@ final class CryptoCommandsServiceProvider extends ServiceProvider
         $this->commands([
             ExchangeInformation::class,
             CreateCrawler::class,
+            Klines::class,
         ]);
     }
 }
