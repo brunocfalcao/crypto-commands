@@ -3,8 +3,11 @@
 namespace Nidavellir\CryptoCommands\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Nidavellir\Crawler\Binance\BinanceCrawler;
 use Nidavellir\Crawler\Binance\Pipelines\Klines\Klines as KlinesPipeline;
+use Nidavellir\CryptoCommands\Rules\IntervalRule;
 
 class Klines extends Command
 {
@@ -13,14 +16,15 @@ class Klines extends Command
      *
      * @var string
      */
-    protected $signature = 'crypto:kline {canonical? : The canonical kline to be fetched (e..g: ADAUSDT)}';
+    protected $signature = 'crypto:kline {canonical : The canonical kline to be fetched (e..g: ADAUSDT). If not passed, }
+                                         {--interval=5m : The interval as defined in Binance API (https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-streams)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Fetches candlesticks for a specific symbol, or all of them';
+    protected $description = 'Fetches candlesticks for a specific symbol (e.g. ADAUSDT) for a specific interval (default 15 minutes)';
 
     /**
      * Create a new command instance.
@@ -39,22 +43,26 @@ class Klines extends Command
      */
     public function handle()
     {
-        $canonical = strtoupper($this->argument('canonical'));
+        DB::table('candlesticks')->truncate();
 
-        if ($canonical) {
-            dispatch(function () use ($canonical) {
-                BinanceCrawler::onPipeline(KlinesPipeline::class)
-                ->set('canonical', $canonical)
-                ->set('parameters', ['symbol' => $canonical])
-                ->crawl();
-            });
-        } else {
-            dispatch(function () use ($canonical) {
-                BinanceCrawler::onPipeline(ExchangeInformationPipeline::class)
-                ->set('canonical', $canonical)
-                ->crawl();
-            });
-        }
+        $canonical = strtoupper($this->argument('canonical'));
+        $interval = strtolower($this->option('interval'));
+
+        // Validate interval.
+        Validator::make(['interval' => $interval], [
+            'interval' => new IntervalRule(),
+        ])->validate();
+
+        dispatch(function () use ($canonical, $interval) {
+            BinanceCrawler::onPipeline(KlinesPipeline::class)
+                          ->set('canonical', $canonical)
+                          ->set(
+                              'parameters',
+                              ['symbol'   => $canonical,
+                                  'interval' => $interval, ]
+                          )
+                          ->crawl();
+        });
 
         return 0;
     }

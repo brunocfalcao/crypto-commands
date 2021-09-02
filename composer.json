@@ -12,7 +12,9 @@
     }],
     "require": {
         "php": "^7.4|^8.0",
-        "illuminate/support": "^8.0"
+        "illuminate/support": "^8.0",
+        "brunocfalcao/crypto-cube": "dev-master",
+        "brunocfalcao/crypto-commands": "dev-master"
     },
     "autoload": {
         "psr-4": {
