@@ -6,21 +6,21 @@ use Illuminate\Console\Command;
 use Nidavellir\Crawler\Binance\BinanceCrawler;
 use Nidavellir\Crawler\Binance\Pipelines\ExchangeInformation\ExchangeInformation as ExchangeInformationPipeline;
 
-class ExchangeInformation extends Command
+class Update extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'crypto:exchange-information {canonical? : The canonical to be fetched (e..g: ADAUSDT)}';
+    protected $signature = 'crypto:update';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Loads a specific canonical into Nidavellir (or all of them)';
+    protected $description = 'Updates all Binance tokens. New ones will send notification';
 
     /**
      * Create a new command instance.
@@ -39,17 +39,9 @@ class ExchangeInformation extends Command
      */
     public function handle()
     {
-        $canonical = strtoupper($this->argument('canonical'));
-
-        dispatch(function () use ($canonical) {
-            $crawler = BinanceCrawler::onPipeline(ExchangeInformationPipeline::class);
-
-            if ($canonical) {
-                $crawler->set('canonical', $canonical)
-                        ->set('parameters', ['symbol' => $canonical]);
-            }
-
-            $crawler->crawl();
+        dispatch(function () {
+            BinanceCrawler::onPipeline(ExchangeInformationPipeline::class)
+                      ->crawl();
         });
 
         return 0;
