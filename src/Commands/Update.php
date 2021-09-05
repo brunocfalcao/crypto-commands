@@ -3,8 +3,6 @@
 namespace Nidavellir\CryptoCommands\Commands;
 
 use Illuminate\Console\Command;
-use Nidavellir\Crawler\Binance\BinanceCrawler;
-use Nidavellir\Crawler\Binance\Pipelines\ExchangeInformation\ExchangeInformation as ExchangeInformationPipeline;
 use Nidavellir\CryptoCube\Jobs\UpdateTokens;
 
 class Update extends Command
