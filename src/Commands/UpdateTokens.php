@@ -3,16 +3,16 @@
 namespace Nidavellir\CryptoCommands\Commands;
 
 use Illuminate\Console\Command;
-use Nidavellir\CryptoCube\Jobs\UpdateTokens;
+use Nidavellir\CryptoCube\Jobs\UpdateTokens as UpdateTokensJob;
 
-class Update extends Command
+class UpdateTokens extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'crypto:update';
+    protected $signature = 'crypto:update-tokens';
 
     /**
      * The console command description.
@@ -38,7 +38,7 @@ class Update extends Command
      */
     public function handle()
     {
-        UpdateTokens::dispatch();
+        UpdateTokensJob::dispatch();
 
         return 0;
     }

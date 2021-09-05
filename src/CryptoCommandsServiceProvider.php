@@ -3,7 +3,6 @@
 namespace Nidavellir\CryptoCommands;
 
 use Illuminate\Support\ServiceProvider;
-use Nidavellir\CryptoCommands\Commands\Update;
 
 final class CryptoCommandsServiceProvider extends ServiceProvider
 {
@@ -20,7 +19,7 @@ final class CryptoCommandsServiceProvider extends ServiceProvider
     private function registerCommands()
     {
         $this->commands([
-            Update::class,
+            UpdateTokens::class,
         ]);
     }
 }
