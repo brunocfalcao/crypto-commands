@@ -3,6 +3,7 @@
 namespace Nidavellir\CryptoCommands;
 
 use Illuminate\Support\ServiceProvider;
+use Nidavellir\CryptoCommands\Commands\UpdateTokens;
 
 final class CryptoCommandsServiceProvider extends ServiceProvider
 {
